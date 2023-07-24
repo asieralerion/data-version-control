@@ -14,6 +14,7 @@ def main(repo_path):
     predictions = model.predict(test_data)
     accuracy = accuracy_score(labels, predictions)
     metrics = {"accuracy": accuracy}
+    print(f'Evaluation results: {metrics}')
     accuracy_path = repo_path / "metrics/accuracy.json"
     accuracy_path.write_text(json.dumps(metrics))
 

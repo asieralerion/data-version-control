@@ -1,6 +1,7 @@
 from joblib import dump
 from pathlib import Path
 
+from tqdm import tqdm
 import numpy as np
 import pandas as pd
 from skimage.io import imread_collection
@@ -29,7 +30,8 @@ def load_data(data_path):
     df = pd.read_csv(data_path)
     labels = load_labels(data_frame=df, column_name="label")
     raw_images = load_images(data_frame=df, column_name="filename")
-    processed_images = [preprocess(image) for image in raw_images]
+    print('Loading data!')
+    processed_images = [preprocess(image) for image in tqdm(raw_images)]
     data = np.concatenate(processed_images, axis=0)
     return data, labels
 
@@ -37,7 +39,7 @@ def load_data(data_path):
 def main(repo_path):
     train_csv_path = repo_path / "data/prepared/train.csv"
     train_data, labels = load_data(train_csv_path)
-    sgd = SGDClassifier(max_iter=10)
+    sgd = SGDClassifier(max_iter=10, verbose=1)
     trained_model = sgd.fit(train_data, labels)
     dump(trained_model, repo_path / "model/model.joblib")
 
